@@ -1,0 +1,36 @@
+name: CD - Azure VM
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci-bun.yml
+  deploy:
+    name: Deploy to Azure
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DISCORD_BOT_HOST }}
+          port: ${{ secrets.DISCORD_BOT_SSH_PORT }}
+          username: ${{ secrets.DISCORD_BOT_HOST_USERNAME }}
+          key: ${{ secrets.DISCORD_BOT_SSH_KEY }}
+
+          script: |
+            if [ ! -d "${{ github.event.repository.name }}" ]; then
+              git clone git@github.com:${{ github.repository }}.git
+              cd ${{ github.event.repository.name }}
+            else
+              cd ${{ github.event.repository.name }}
+              git reset --hard origin/main
+              git checkout main
+              git pull
+              rm -rf node_modules
+            fi
+            /home/discord-bots-azure/.bun/bin/bun install --frozen-lockfile --production
+            /home/discord-bots-azure/.bun/bin/pm2 restart ecosystem.config.cjs
+            /home/discord-bots-azure/.bun/bin/pm2 save

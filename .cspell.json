@@ -1,0 +1,20 @@
+{
+	"version": "0.2",
+	"useGitignore": true,
+	"words": [
+		"Spark⚡️Bot",
+		"sparkbot",
+		"SparkBot",
+		"valibot",
+		"cooldown",
+		"cooldowns",
+		"commitlint",
+		"markdownlint",
+		"codechecks",
+		"typecov",
+		"luxon",
+		"pino",
+		"axiomhq"
+	],
+	"flagWords": []
+}
