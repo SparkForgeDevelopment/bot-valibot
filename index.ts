@@ -21,9 +21,12 @@ client.scheduledEvents = new Collection();
 
 // Initialize logger
 client.logger = await initLogger(client.config.loggingLibraryPlugin);
-client.on(Events.Debug, (message) => {
-	client.logger.debug(message);
-});
+
+// Disabled for now as Pino is not respecting log levels in transports
+// atm.
+// client.on(Events.Debug, (message) => {
+// 	client.logger.debug(message);
+// });
 client.on(Events.Warn, (message) => {
 	client.logger.warn(message);
 });
