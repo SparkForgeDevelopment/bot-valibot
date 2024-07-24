@@ -47,15 +47,31 @@ export class Command extends CommandSparkWithAutocomplete {
 		);
 
 		if (result) {
-			void interaction.reply(
-				`I searched my databanks and found this: https://valibot.dev${result}`,
-			);
+			interaction
+				.reply(
+					`I searched my databanks and found this: https://valibot.dev${result}`,
+				)
+				.catch((exception: unknown) => {
+					if (exception instanceof Error) {
+						interaction.client.logger.warn(exception);
+					} else {
+						interaction.client.logger.warn(String(exception));
+					}
+				});
 		} else {
-			void interaction.reply({
-				content:
-					'I was unable to locate anything in my databanks for that topic.',
-				ephemeral: true,
-			});
+			interaction
+				.reply({
+					content:
+						'I was unable to locate anything in my databanks for that topic.',
+					ephemeral: true,
+				})
+				.catch((exception: unknown) => {
+					if (exception instanceof Error) {
+						interaction.client.logger.warn(exception);
+					} else {
+						interaction.client.logger.warn(String(exception));
+					}
+				});
 		}
 	}
 
@@ -71,6 +87,12 @@ export class Command extends CommandSparkWithAutocomplete {
 			filteredKeys.size > 25
 				? [{ name: 'To many matches', value: 'To many matches' }]
 				: filteredKeys.map((_value, key) => ({ name: key, value: key }));
-		await interaction.respond(response);
+		interaction.respond(response).catch((exception: unknown) => {
+			if (exception instanceof Error) {
+				interaction.client.logger.warn(exception);
+			} else {
+				interaction.client.logger.warn(String(exception));
+			}
+		});
 	}
 }
