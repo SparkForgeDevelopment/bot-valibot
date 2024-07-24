@@ -15,6 +15,7 @@ const linkSchema = v.pipe(
 		'https://valibot.dev/playground/?code=',
 		'Not a Valibot playground link.',
 	),
+	v.maxLength(1900, 'Link to long for Discord posts.'),
 );
 
 const command = new SlashCommandBuilder();
@@ -31,7 +32,7 @@ command
 export class Command extends CommandSpark {
 	override command = command;
 	override id = command.name;
-	override execute(interaction: ChatInputCommandInteraction) {
+	override async execute(interaction: ChatInputCommandInteraction) {
 		const link = v.safeParse(
 			linkSchema,
 			interaction.options.getString('link', true),
@@ -42,18 +43,33 @@ export class Command extends CommandSpark {
 			const code = lz.decompressFromEncodedURIComponent(
 				link.output.slice(codeIndex),
 			);
-			void interaction.reply({
-				content:
-					`[Try this code in my playground](<${link.output}>)\n` +
-					'```ts\n' +
-					code +
-					'\n```',
+
+			let messageContent = `[Try this code in my playground](<${link.output}>)\n\`\`\`ts\n`;
+			messageContent +=
+				messageContent.length + code.length + 4 < 2000
+					? code + '\n```'
+					: 'Code to long to post.\n```';
+
+			interaction.reply(messageContent).catch((exception: unknown) => {
+				if (exception instanceof Error) {
+					interaction.client.logger.warn(exception);
+				} else {
+					interaction.client.logger.warn(String(exception));
+				}
 			});
 		} else {
-			void interaction.reply({
-				content: `I apologize for the inconvenience but the link you provided is not valid.  My internal processors tell me the the error was: ${link.issues[0].message}`,
-				ephemeral: true,
-			});
+			interaction
+				.reply({
+					content: `I apologize for the inconvenience but the link you provided is not valid.  My internal processors tell me the the error was: ${link.issues[0].message}`,
+					ephemeral: true,
+				})
+				.catch((exception: unknown) => {
+					if (exception instanceof Error) {
+						interaction.client.logger.warn(exception);
+					} else {
+						interaction.client.logger.warn(String(exception));
+					}
+				});
 		}
 	}
 }
@@ -80,31 +96,63 @@ export class GatewayEvent extends GatewayEventSpark<Events.MessageCreate> {
 			);
 
 			if (codeBlock.success) {
-				const messageContent =
-					`[Try this code in my playground](<https://valibot.dev/playground/?code=${lz.compressToEncodedURIComponent(codeBlock.output)}>)\n` +
-					message.content.slice('!pg'.length + 1);
+				let messageContent = `[Try this code in my playground](<https://valibot.dev/playground/?code=${lz.compressToEncodedURIComponent(codeBlock.output)}>)\n`;
+				if (
+					messageContent.length +
+						message.content.slice('!pg'.length + 1).length <
+					2000
+				)
+					messageContent += message.content.slice('!pg'.length + 1);
 
 				if (message.reference?.messageId) {
 					const orgMessage = await message.channel.messages.fetch(
 						message.reference.messageId,
 					);
-					await orgMessage.reply(messageContent);
+					orgMessage.reply(messageContent).catch((exception: unknown) => {
+						if (exception instanceof Error) {
+							message.client.logger.warn(exception);
+						} else {
+							message.client.logger.warn(String(exception));
+						}
+					});
 				} else {
-					await message.channel.send(messageContent);
+					await message.channel
+						.send(messageContent)
+						.catch((exception: unknown) => {
+							if (exception instanceof Error) {
+								message.client.logger.warn(exception);
+							} else {
+								message.client.logger.warn(String(exception));
+							}
+						});
 				}
 
 				if (message.channel.manageable) {
-					void message.delete();
+					message.delete().catch((exception: unknown) => {
+						if (exception instanceof Error) {
+							message.client.logger.warn(exception);
+						} else {
+							message.client.logger.warn(String(exception));
+						}
+					});
 				} else {
 					message.client.logger.warn(
 						`${import.meta.path}: Cannot delete messages in channel ${message.channel.name}`,
 					);
 				}
 			} else {
-				void message.reply({
-					content:
-						'I apologize for the inconvenience but your message does not appear to be correctly formatted.  Please remember your code must be inside code blocks and may not contain other content.\n\n> \\```ts\n> your code\n> \\```',
-				});
+				message
+					.reply({
+						content:
+							'I apologize for the inconvenience but your message does not appear to be correctly formatted.  Please remember your code must be inside code blocks and may not contain other content.\n\n> \\```ts\n> your code\n> \\```',
+					})
+					.catch((exception: unknown) => {
+						if (exception instanceof Error) {
+							message.client.logger.warn(exception);
+						} else {
+							message.client.logger.warn(String(exception));
+						}
+					});
 			}
 		}
 	}
