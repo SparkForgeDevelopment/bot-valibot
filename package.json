@@ -1,36 +1,37 @@
 {
-	"name": "bot-valibot",
-	"version": "0.1.0",
-	"description": "Valibot Discord server bot.",
-	"author": "Brian Lister <brian@sparkforge.dev (http://sparkforge.dev/)",
-	"license": "MIT",
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"lint": "prettier . --write --log-level warn; xo; markdownlint-cli2 '**/*.md' '#node_modules'; tsc --noEmit --skipLibCheck"
-	},
-	"dependencies": {
-		"@axiomhq/pino": "^1.0.0",
-		"@sparkbot/plugin-logger": "^0.1.0",
-		"@sparkbot/plugin-logger-pino": "^0.1.0",
-		"@sparkbot/plugin-secrets": "^0.1.0",
-		"@sparkbot/plugin-secrets-azure": "^0.1.0",
-		"cron": "^3.1.7",
-		"discord.js": "^14.15.3",
-		"luxon": "^3.4.4",
-		"pino-pretty": "^11.2.1",
-		"valibot": "^0.33.3"
-	},
-	"devDependencies": {
-		"@commitlint/cli": "^19.3.0",
-		"@commitlint/config-conventional": "^19.2.2",
-		"@types/bun": "latest",
-		"markdownlint-cli2": "^0.13.0",
-		"prettier": "^3.3.3",
-		"type-coverage": "^2.29.1",
-		"xo": "^0.58.0"
-	},
-	"peerDependencies": {
-		"typescript": "^5.5.4"
-	}
+  "name": "bot-valibot",
+  "version": "0.1.0",
+  "description": "Valibot Discord server bot.",
+  "author": "Brian Lister <brian@sparkforge.dev (http://sparkforge.dev/)",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "prettier . --write --log-level warn; xo; markdownlint-cli2 '**/*.md' '#node_modules'; tsc --noEmit --skipLibCheck"
+  },
+  "dependencies": {
+    "@axiomhq/pino": "^1.0.0",
+    "@sparkbot/plugin-logger": "^0.1.0",
+    "@sparkbot/plugin-logger-pino": "^0.1.0",
+    "@sparkbot/plugin-secrets": "^0.1.0",
+    "@sparkbot/plugin-secrets-azure": "^0.1.0",
+    "cron": "^3.1.7",
+    "discord.js": "^14.15.3",
+    "luxon": "^3.4.4",
+    "lz-string": "^1.5.0",
+    "pino-pretty": "^11.2.1",
+    "valibot": "^0.33.3"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@types/bun": "latest",
+    "markdownlint-cli2": "^0.13.0",
+    "prettier": "^3.3.3",
+    "type-coverage": "^2.29.1",
+    "xo": "^0.58.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.5.4"
+  }
 }
