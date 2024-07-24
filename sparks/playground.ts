@@ -71,7 +71,8 @@ export class GatewayEvent extends GatewayEventSpark<Events.MessageCreate> {
 
 	override async execute(message: Message): Promise<void> {
 		if (
-			message.channel.type === ChannelType.GuildText &&
+			message.channel.isTextBased() &&
+			!message.channel.isDMBased() &&
 			message.content.startsWith('!pg')
 		) {
 			const codeBlock = v.safeParse(
@@ -81,7 +82,7 @@ export class GatewayEvent extends GatewayEventSpark<Events.MessageCreate> {
 
 			if (codeBlock.success) {
 				const messageContent =
-					`[Run this code in my playground](<https://valibot.dev/playground/?code=${lz.compressToEncodedURIComponent(codeBlock.output)}>)\n` +
+					`[Try this code in my playground](<https://valibot.dev/playground/?code=${lz.compressToEncodedURIComponent(codeBlock.output)}>)\n` +
 					message.content.slice('!pg'.length + 1);
 
 				if (message.reference?.messageId) {
