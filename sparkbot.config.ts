@@ -14,7 +14,11 @@ export const secretsVaultPluginConfig: SecretsVaultSchema = {
 export const sparkBotConfig: SparkBotSchema = {
 	discordAPIKey: { secretVaultKey: 'valibot-discordAPIKey' },
 	discordAppID: { secretVaultKey: 'valibot-discordAppID' },
-	discordIntents: [GatewayIntentBits.Guilds],
+	discordIntents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildMessages,
+	],
 	enabledPartials: [],
 	defaultPresence: {
 		status: 'online',
