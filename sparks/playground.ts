@@ -1,5 +1,4 @@
 import {
-	ChannelType,
 	type ChatInputCommandInteraction,
 	Events,
 	type Message,
